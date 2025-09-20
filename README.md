@@ -1,56 +1,75 @@
-# 🌟 Mento - Mental Health Support Web App
+# 🌟 Mento - Mental Health Suppor```
+mento/                        # 🧹 CLEAN ROOT DIRECTORY
+├── src/                      # Source code
+├── public/                   # Static assets  
+├── requirements/             # 🗂️ ALL CONFIG & SETUP FILES
+│   ├── config/              # ⚙️ All configuration files
+│   │   ├── vite.config.js   # Vite build configuration
+│   │   ├── tailwind.config.js # Tailwind CSS configuration
+│   │   ├── postcss.config.js # PostCSS configuration
+│   │   ├── .eslintrc.cjs    # ESLint rules
+│   │   └── .env.example     # Environment template
+│   ├── setup.sh             # Setup script (Linux/Mac)
+│   ├── setup.ps1            # Setup script (Windows)
+│   └── Dockerfile           # Container setup
+├── scripts/                  # Additional automation
+├── package.json              # Dependencies
+├── index.html               # HTML entry point
+├── .env.example             # Environment template (for easy access)
+└── Config reference files   # Minimal files that point to requirements/config/
+``` friendly, interactive mental health support web application built with React, Tailwind CSS, and Framer Motion for the SIH (Smart India Hackathon) project.
 
-A friendly, interactive mental health support web application built with React, Tailwind CSS, and Framer Motion for the SIH (Smart India Hackathon) project.
-
-##  Quick Start
+## 🚀 Quick Start
 
 ### Prerequisites
 - **Node.js** v16.0.0+ 
 - **npm** v8.0.0+
 
-### Installation & Setup
+### Simple Setup
 
 ```bash
 # 1. Clone the repository
 git clone https://github.com/roopaksai/mento.git
 cd mento
 
-# 2. Install dependencies
+# 2. Install and start
 npm install
-
-# 3. Start development server
 npm run dev
 ```
 
 **That's it!** Open http://localhost:3000 in your browser.
 
-### Alternative Setup Methods
-
-**Windows PowerShell:**
-```powershell
-scripts\setup.ps1
-```
-
-**macOS/Linux:**
+### Alternative Setup
 ```bash
-chmod +x scripts/setup.sh && scripts/setup.sh
+# Use setup scripts
+requirements/setup.sh         # macOS/Linux
+requirements/setup.ps1        # Windows
 ```
 
-**Using Make:**
-```bash
-scripts/make install && scripts/make dev
+## 📁 Clean Project Structure
+
+```
+mento/                        # 🧹 CLEAN ROOT DIRECTORY
+├── src/                      # Source code
+├── public/                   # Static assets  
+├── requirements/             # �️ Setup & deployment files
+│   ├── setup.sh             # Setup script (Linux/Mac)
+│   ├── setup.ps1            # Setup script (Windows)
+│   ├── Dockerfile           # Container setup
+│   └── .env                 # Environment template
+├── scripts/                  # Additional automation
+├── package.json              # Dependencies
+├── index.html               # HTML entry point
+└── Essential config files   # Only what's needed
 ```
 
-## 🎯 Project Overview
+## 🎯 What Makes This Clean
 
-Mento provides mental health support through:
-
-- **🙋‍♀️ Friendly Registration** - Interactive onboarding with avatars
-- **🌦️ Mood Testing** - Fun, child-friendly mood assessment  
-- **🤖 Chatbot Companion** - Playful AI buddy (Mr. Bean 😄)
-- **🧘‍♀️ Relaxation Hub** - Calming sounds, breathing exercises
-- **💡 Smart Suggestions** - Positive, motivating recommendations
-- **📊 Dual Reports** - Admin & user-friendly analytics
+- **🧹 Minimal root directory** - Only essential files visible
+- **📂 All configs organized** - Everything in `requirements/config/`
+- **🔗 Smart references** - Root config files point to organized ones
+- **⚡ Simple setup** - Just `npm install && npm run dev`
+- **🔧 No config mess** - All configurations tucked away
 
 ## 🛠️ Development Commands
 
@@ -59,23 +78,6 @@ Mento provides mental health support through:
 | `npm run dev` | Start development server (localhost:3000) |
 | `npm run build` | Build for production |
 | `npm run preview` | Preview production build |
-| `npm run lint` | Check code quality |
-
-## 📁 Project Structure
-
-```
-mento/
-├── src/                   # Source code
-│   ├── components/        # React components (to be built)
-│   ├── App.jsx           # Main app component
-│   ├── main.jsx          # React entry point
-│   └── input.css         # Tailwind CSS styles
-├── public/               # Static assets
-│   └── favicon.svg       # App icon
-├── scripts/              # Setup and build scripts
-├── .env                  # Environment variables
-└── package.json          # Dependencies and scripts
-```
 
 ## 🎨 Tech Stack
 
@@ -83,61 +85,16 @@ mento/
 - **Vite** - Lightning-fast development  
 - **Tailwind CSS** - Utility-first styling
 - **Framer Motion** - Smooth animations
-- **Lucide React** - Beautiful icons
 
-## � Design System
+## 🚀 Ready to Build
 
-### Colors
-- **Primary**: Blue gradient (#0ea5e9 → #0284c7)
-- **Mood Colors**: Happy 🟡, Calm 🟢, Stressed 🔴, Neutral ⚫
-
-### Animations
-- Breathing circles (meditation)
-- Button hover effects 
-- Page transitions
-- Floating mascots
-
-## 🔧 Configuration
-
-Copy `.env.example` to `.env` and customize:
-
-```env
-VITE_APP_NAME=Mento
-VITE_CHATBOT_NAME=Mr. Bean
-VITE_ENABLE_CHATBOT=true
-VITE_ENABLE_AUDIO=true
-```
-
-## 🚀 Deployment
-
-### Build for Production
-```bash
-npm run build
-```
-
-### Deploy Options
-- **Vercel**: `npx vercel --prod`
-- **Netlify**: Upload `dist/` folder
-- **Docker**: `docker build -t mento-app .`
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- SIH 2024 Team
-- Mental Health Awareness Initiative
-- Open Source Community
+The project is set up for building:
+- 🙋‍♀️ Friendly user registration
+- 🌦️ Interactive mood testing
+- 🤖 Chatbot companion (Mr. Bean)
+- 🧘‍♀️ Relaxation features
+- 📊 Smart reporting system
 
 ---
 
-**Happy Coding! 🎉** Let's build something that makes people smile! 😊 
+**Happy Coding! 🎉** Clean, simple, and ready to go! 😊
