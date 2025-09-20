@@ -1,6 +1,5 @@
-// ESLint config - references actual config in requirements/config/module.exports = {
-
-module.exports = require('./requirements/config/.eslintrc.cjs');  root: true,
+module.exports = {
+  root: true,
   env: { browser: true, es2020: true },
   extends: [
     'eslint:recommended',
