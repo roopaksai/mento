@@ -1,14 +1,415 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mento - Mental Health Support</title>
-    <meta name="description" content="A friendly mental health support web app that helps you track your mood and find peace">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-</head>
-<body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mento - Your Mental Health Buddy 🌟</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              happy: '#fbbf24',
+              calm: '#06d6a0',
+              stressed: '#ef4444',
+              peaceful: '#8b5cf6',
+              energetic: '#f59e0b'
+            },
+            animation: {
+              'bounce-slow': 'bounce 2s infinite',
+              'pulse-slow': 'pulse 3s infinite',
+              'breathe': 'breathe 4s ease-in-out infinite',
+              'float': 'float 3s ease-in-out infinite',
+              'glow': 'glow 2s ease-in-out infinite alternate'
+            },
+            keyframes: {
+              breathe: {
+                '0%, 100%': { transform: 'scale(1)' },
+                '50%': { transform: 'scale(1.1)' }
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0px)' },
+                '50%': { transform: 'translateY(-10px)' }
+              },
+              glow: {
+                '0%': { boxShadow: '0 0 5px #06d6a0, 0 0 10px #06d6a0, 0 0 15px #06d6a0' },
+                '100%': { boxShadow: '0 0 10px #06d6a0, 0 0 20px #06d6a0, 0 0 30px #06d6a0' }
+              }
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body class="bg-gradient-to-br from-blue-50 via-white to-green-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
+      <div class="container mx-auto px-4 py-3">
+        <div class="flex items-center justify-between">
+          <h1 class="text-2xl font-bold text-calm">🌟 Mento</h1>
+          <div class="hidden md:flex space-x-6">
+            <a href="#home" class="text-gray-600 hover:text-calm transition-colors">Home</a>
+            <a href="#mood-test" class="text-gray-600 hover:text-calm transition-colors">Mood Test</a>
+            <a href="#relax" class="text-gray-600 hover:text-calm transition-colors">Relax</a>
+            <a href="#chat" class="text-gray-600 hover:text-calm transition-colors">Chat</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section - Registration -->
+    <section id="home" class="container mx-auto px-4 py-12">
+      <div class="text-center mb-12">
+        <div class="animate-float mb-8">
+          <div class="text-8xl mb-4">😄</div>
+          <h1 class="text-5xl md:text-6xl font-bold text-gray-800 mb-4">
+            What's your name?
+          </h1>
+          <h2 class="text-2xl md:text-3xl text-calm font-semibold">
+            I am Mr. Bean! 😄
+          </h2>
+        </div>
+        
+        <!-- Name Input -->
+        <div class="max-w-md mx-auto mb-8">
+          <input 
+            id="userName" 
+            type="text" 
+            placeholder="Tell me your name... ✨"
+            class="w-full px-6 py-4 text-xl rounded-2xl border-2 border-calm/30 focus:border-calm focus:outline-none focus:ring-4 focus:ring-calm/20 transition-all duration-300 text-center"
+          >
+          <button 
+            onclick="greetUser()" 
+            class="mt-4 px-8 py-3 bg-happy text-white rounded-xl font-semibold hover:bg-yellow-500 transform hover:scale-105 transition-all duration-300 hover:shadow-lg"
+          >
+            Nice to meet you! 👋
+          </button>
+        </div>
+
+        <!-- Avatar Selection -->
+        <div class="bg-white/70 backdrop-blur-sm rounded-3xl p-8 max-w-2xl mx-auto shadow-lg">
+          <h3 class="text-2xl font-semibold text-gray-800 mb-6">Choose your avatar! 🎭</h3>
+          <div class="grid grid-cols-3 md:grid-cols-6 gap-4" id="avatarGrid">
+            <!-- Cartoon Faces -->
+            <button class="avatar-btn text-4xl p-4 rounded-2xl hover:bg-happy/20 transition-all duration-300 transform hover:scale-110" data-avatar="😊">😊</button>
+            <button class="avatar-btn text-4xl p-4 rounded-2xl hover:bg-happy/20 transition-all duration-300 transform hover:scale-110" data-avatar="😎">😎</button>
+            <button class="avatar-btn text-4xl p-4 rounded-2xl hover:bg-happy/20 transition-all duration-300 transform hover:scale-110" data-avatar="🤗">🤗</button>
+            <button class="avatar-btn text-4xl p-4 rounded-2xl hover:bg-happy/20 transition-all duration-300 transform hover:scale-110" data-avatar="🥳">🥳</button>
+            <!-- Pets -->
+            <button class="avatar-btn text-4xl p-4 rounded-2xl hover:bg-happy/20 transition-all duration-300 transform hover:scale-110" data-avatar="🐱">🐱</button>
+            <button class="avatar-btn text-4xl p-4 rounded-2xl hover:bg-happy/20 transition-all duration-300 transform hover:scale-110" data-avatar="🐶">🐶</button>
+            <button class="avatar-btn text-4xl p-4 rounded-2xl hover:bg-happy/20 transition-all duration-300 transform hover:scale-110" data-avatar="🦋">🦋</button>
+            <button class="avatar-btn text-4xl p-4 rounded-2xl hover:bg-happy/20 transition-all duration-300 transform hover:scale-110" data-avatar="🌺">🌺</button>
+            <!-- Mood Colors -->
+            <button class="avatar-btn w-12 h-12 rounded-full bg-happy hover:scale-110 transition-all duration-300" data-avatar="happy"></button>
+            <button class="avatar-btn w-12 h-12 rounded-full bg-calm hover:scale-110 transition-all duration-300" data-avatar="calm"></button>
+            <button class="avatar-btn w-12 h-12 rounded-full bg-peaceful hover:scale-110 transition-all duration-300" data-avatar="peaceful"></button>
+            <button class="avatar-btn w-12 h-12 rounded-full bg-energetic hover:scale-110 transition-all duration-300" data-avatar="energetic"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mood Test Section -->
+    <section id="mood-test" class="container mx-auto px-4 py-16 bg-gradient-to-r from-purple-50 to-pink-50 rounded-3xl mb-16">
+      <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">How are you feeling today? 🌈</h2>
+      
+      <!-- Weather Mood -->
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 mb-8 shadow-lg">
+        <h3 class="text-2xl font-semibold text-gray-700 mb-6 text-center">If your mood was a weather report, what would it be?</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <button class="mood-btn bg-yellow-100 hover:bg-yellow-200 p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg" data-mood="sunny">
+            <div class="text-4xl mb-2">☀️</div>
+            <div class="font-semibold">Sunny</div>
+            <div class="text-sm text-gray-600">Bright & Happy</div>
+          </button>
+          <button class="mood-btn bg-blue-100 hover:bg-blue-200 p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg" data-mood="rainy">
+            <div class="text-4xl mb-2">🌧️</div>
+            <div class="font-semibold">Rainy</div>
+            <div class="text-sm text-gray-600">A bit down</div>
+          </button>
+          <button class="mood-btn bg-gray-100 hover:bg-gray-200 p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg" data-mood="stormy">
+            <div class="text-4xl mb-2">🌩️</div>
+            <div class="font-semibold">Stormy</div>
+            <div class="text-sm text-gray-600">Overwhelmed</div>
+          </button>
+          <button class="mood-btn bg-green-100 hover:bg-green-200 p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-lg" data-mood="cloudy">
+            <div class="text-4xl mb-2">☁️</div>
+            <div class="font-semibold">Cloudy</div>
+            <div class="text-sm text-gray-600">Just okay</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Color Mood -->
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 mb-8 shadow-lg">
+        <h3 class="text-2xl font-semibold text-gray-700 mb-6 text-center">Pick a color for your mood 🎨</h3>
+        <div class="grid grid-cols-4 md:grid-cols-8 gap-4">
+          <button class="color-mood w-16 h-16 rounded-full bg-red-400 hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl" data-color="red"></button>
+          <button class="color-mood w-16 h-16 rounded-full bg-orange-400 hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl" data-color="orange"></button>
+          <button class="color-mood w-16 h-16 rounded-full bg-yellow-400 hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl" data-color="yellow"></button>
+          <button class="color-mood w-16 h-16 rounded-full bg-green-400 hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl" data-color="green"></button>
+          <button class="color-mood w-16 h-16 rounded-full bg-blue-400 hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl" data-color="blue"></button>
+          <button class="color-mood w-16 h-16 rounded-full bg-purple-400 hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl" data-color="purple"></button>
+          <button class="color-mood w-16 h-16 rounded-full bg-pink-400 hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl" data-color="pink"></button>
+          <button class="color-mood w-16 h-16 rounded-full bg-gray-400 hover:scale-110 transition-all duration-300 shadow-lg hover:shadow-xl" data-color="gray"></button>
+        </div>
+      </div>
+
+      <!-- Activity Preference -->
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg">
+        <h3 class="text-2xl font-semibold text-gray-700 mb-6 text-center">What do you want to do right now?</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <button class="activity-btn bg-gradient-to-br from-calm to-green-400 text-white p-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl" data-activity="relax">
+            <div class="text-5xl mb-4">🧘‍♀️</div>
+            <div class="text-xl font-bold mb-2">Relax</div>
+            <div class="text-sm opacity-90">Find your peace</div>
+          </button>
+          <button class="activity-btn bg-gradient-to-br from-purple-400 to-pink-400 text-white p-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl" data-activity="talk">
+            <div class="text-5xl mb-4">💬</div>
+            <div class="text-xl font-bold mb-2">Talk</div>
+            <div class="text-sm opacity-90">Share your thoughts</div>
+          </button>
+          <button class="activity-btn bg-gradient-to-br from-happy to-orange-400 text-white p-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl" data-activity="laugh">
+            <div class="text-5xl mb-4">😄</div>
+            <div class="text-xl font-bold mb-2">Laugh</div>
+            <div class="text-sm opacity-90">Brighten your day</div>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reports Section -->
+    <section id="reports" class="container mx-auto px-4 py-16">
+      <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Your Wellness Report 📊</h2>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- Admin Report -->
+        <div class="bg-white rounded-3xl p-8 shadow-lg border-l-4 border-stressed">
+          <div class="flex items-center mb-6">
+            <div class="text-3xl mr-3">👨‍⚕️</div>
+            <h3 class="text-2xl font-bold text-gray-800">Admin Report</h3>
+          </div>
+          <div class="space-y-4">
+            <div class="bg-red-50 p-4 rounded-xl">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-gray-700">Stress Level:</span>
+                <span class="px-3 py-1 bg-red-200 text-red-800 rounded-full text-sm font-bold">Needs Attention</span>
+              </div>
+            </div>
+            <div class="bg-yellow-50 p-4 rounded-xl">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-gray-700">Mood Stability:</span>
+                <span class="px-3 py-1 bg-yellow-200 text-yellow-800 rounded-full text-sm font-bold">Moderate</span>
+              </div>
+            </div>
+            <div class="bg-green-50 p-4 rounded-xl">
+              <div class="flex items-center justify-between">
+                <span class="font-semibold text-gray-700">Engagement:</span>
+                <span class="px-3 py-1 bg-green-200 text-green-800 rounded-full text-sm font-bold">Active</span>
+              </div>
+            </div>
+            <div class="mt-6 p-4 bg-blue-50 rounded-xl">
+              <p class="text-sm text-blue-800"><strong>Recommendation:</strong> User shows signs of stress. Recommend relaxation activities and regular check-ins.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Report -->
+        <div class="bg-gradient-to-br from-calm to-green-400 rounded-3xl p-8 shadow-lg text-white">
+          <div class="flex items-center mb-6">
+            <div class="text-3xl mr-3">🌿</div>
+            <h3 class="text-2xl font-bold">Your Journey</h3>
+          </div>
+          <div class="space-y-6">
+            <div class="text-center">
+              <div class="text-6xl mb-4">🌱</div>
+              <h4 class="text-xl font-bold mb-2">Your mind is seeking peace</h4>
+              <p class="opacity-90">Let's help you find your calm with some soothing activities</p>
+            </div>
+            <div class="bg-white/20 backdrop-blur-sm rounded-xl p-4">
+              <h5 class="font-bold mb-2">💡 Today's Insight:</h5>
+              <p class="text-sm opacity-90">"Taking time to breathe and center yourself is not a luxury—it's a necessity for your well-being."</p>
+            </div>
+            <div class="bg-white/20 backdrop-blur-sm rounded-xl p-4">
+              <h5 class="font-bold mb-2">🎵 Recommended for you:</h5>
+              <p class="text-sm opacity-90">Try our calming rain sounds and breathing exercises to find your inner peace.</p>
+            </div>
+            <button class="w-full bg-white text-calm font-bold py-3 rounded-xl hover:bg-gray-100 transition-colors duration-300">
+              Start Your Relaxation Journey 🚀
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Relaxation Hub -->
+    <section id="relax" class="container mx-auto px-4 py-16 bg-gradient-to-br from-green-50 to-blue-50 rounded-3xl mb-16">
+      <h2 class="text-4xl font-bold text-center text-gray-800 mb-12">Relaxation Hub 🧘‍♀️</h2>
+      
+      <!-- Calming Sounds -->
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 mb-8 shadow-lg">
+        <h3 class="text-2xl font-semibold text-gray-700 mb-6 text-center">Calming Sounds 🎵</h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <button class="sound-btn bg-blue-100 hover:bg-blue-200 p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 group" data-sound="rain">
+            <div class="text-4xl mb-2 group-hover:animate-pulse">🌧️</div>
+            <div class="font-semibold">Rain</div>
+            <div class="text-sm text-gray-600">Peaceful drops</div>
+          </button>
+          <button class="sound-btn bg-teal-100 hover:bg-teal-200 p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 group" data-sound="ocean">
+            <div class="text-4xl mb-2 group-hover:animate-pulse">🌊</div>
+            <div class="font-semibold">Ocean</div>
+            <div class="text-sm text-gray-600">Wave sounds</div>
+          </button>
+          <button class="sound-btn bg-green-100 hover:bg-green-200 p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 group" data-sound="birds">
+            <div class="text-4xl mb-2 group-hover:animate-pulse">🐦</div>
+            <div class="font-semibold">Birds</div>
+            <div class="text-sm text-gray-600">Nature calls</div>
+          </button>
+          <button class="sound-btn bg-purple-100 hover:bg-purple-200 p-6 rounded-2xl transition-all duration-300 transform hover:scale-105 group" data-sound="lofi">
+            <div class="text-4xl mb-2 group-hover:animate-pulse">🎶</div>
+            <div class="font-semibold">Lo-fi</div>
+            <div class="text-sm text-gray-600">Chill beats</div>
+          </button>
+        </div>
+        <div id="audioPlayer" class="mt-6 text-center text-gray-600 hidden">
+          <div class="animate-pulse">🎵 Playing: <span id="currentSound"></span></div>
+          <button id="stopSound" class="mt-2 px-4 py-2 bg-red-100 hover:bg-red-200 rounded-lg transition-colors">Stop</button>
+        </div>
+      </div>
+
+      <!-- Breathing Exercise -->
+      <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 mb-8 shadow-lg">
+        <h3 class="text-2xl font-semibold text-gray-700 mb-6 text-center">Guided Breathing 🫁</h3>
+        <div class="text-center">
+          <div id="breathingCircle" class="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-calm to-green-400 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+            Breathe
+          </div>
+          <div id="breathingText" class="text-xl font-semibold text-gray-700 mb-4">Click to start breathing exercise</div>
+          <button id="breathingBtn" class="px-6 py-3 bg-calm text-white rounded-xl font-semibold hover:bg-green-600 transition-colors duration-300">
+            Start Breathing
+          </button>
+        </div>
+      </div>
+
+      <!-- Video Cards & Doodle -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Video Placeholders -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg">
+          <h3 class="text-2xl font-semibold text-gray-700 mb-6">Motivational Videos 🎬</h3>
+          <div class="space-y-4">
+            <div class="bg-gradient-to-r from-purple-100 to-pink-100 p-4 rounded-xl hover:shadow-md transition-shadow cursor-pointer">
+              <div class="flex items-center">
+                <div class="text-3xl mr-4">▶️</div>
+                <div>
+                  <h4 class="font-semibold">5-Minute Meditation</h4>
+                  <p class="text-sm text-gray-600">Quick mindfulness session</p>
+                </div>
+              </div>
+            </div>
+            <div class="bg-gradient-to-r from-blue-100 to-teal-100 p-4 rounded-xl hover:shadow-md transition-shadow cursor-pointer">
+              <div class="flex items-center">
+                <div class="text-3xl mr-4">▶️</div>
+                <div>
+                  <h4 class="font-semibold">Positive Affirmations</h4>
+                  <p class="text-sm text-gray-600">Daily motivation boost</p>
+                </div>
+              </div>
+            </div>
+            <div class="bg-gradient-to-r from-green-100 to-yellow-100 p-4 rounded-xl hover:shadow-md transition-shadow cursor-pointer">
+              <div class="flex items-center">
+                <div class="text-3xl mr-4">▶️</div>
+                <div>
+                  <h4 class="font-semibold">Stress Relief Tips</h4>
+                  <p class="text-sm text-gray-600">Practical wellness advice</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Doodle Board -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-lg">
+          <h3 class="text-2xl font-semibold text-gray-700 mb-6">Doodle & Color 🎨</h3>
+          <div class="bg-white rounded-xl border-2 border-dashed border-gray-300 h-64 flex items-center justify-center">
+            <canvas id="doodleCanvas" width="300" height="200" class="border rounded-lg cursor-crosshair"></canvas>
+          </div>
+          <div class="mt-4 flex justify-center space-x-2">
+            <button class="color-picker w-8 h-8 rounded-full bg-red-400 hover:scale-110 transition-transform" data-color="#ef4444"></button>
+            <button class="color-picker w-8 h-8 rounded-full bg-blue-400 hover:scale-110 transition-transform" data-color="#3b82f6"></button>
+            <button class="color-picker w-8 h-8 rounded-full bg-green-400 hover:scale-110 transition-transform" data-color="#10b981"></button>
+            <button class="color-picker w-8 h-8 rounded-full bg-yellow-400 hover:scale-110 transition-transform" data-color="#f59e0b"></button>
+            <button class="color-picker w-8 h-8 rounded-full bg-purple-400 hover:scale-110 transition-transform" data-color="#8b5cf6"></button>
+            <button id="clearCanvas" class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded-lg text-sm transition-colors">Clear</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chatbot Buddy -->
+    <section id="chat" class="container mx-auto px-4 py-16">
+      <div class="bg-gradient-to-br from-purple-100 via-white to-pink-100 rounded-3xl p-8 shadow-lg">
+        <div class="text-center mb-8">
+          <div class="animate-float">
+            <div class="text-6xl mb-4">🤖</div>
+            <h2 class="text-4xl font-bold text-gray-800 mb-2">Meet Your Buddy!</h2>
+            <p class="text-xl text-gray-600">I'm here to listen and chat with you anytime 💙</p>
+          </div>
+        </div>
+        
+        <div class="max-w-2xl mx-auto">
+          <!-- Chat Messages -->
+          <div id="chatMessages" class="bg-white rounded-2xl p-6 h-64 overflow-y-auto mb-4 space-y-4 shadow-inner">
+            <div class="flex items-start space-x-3">
+              <div class="text-2xl">🤖</div>
+              <div class="bg-purple-100 rounded-2xl px-4 py-2 max-w-xs">
+                <p class="text-sm">Hi there! I'm so happy to meet you! How are you feeling today? 😊</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Chat Input -->
+          <div class="flex space-x-2">
+            <input 
+              id="chatInput" 
+              type="text" 
+              placeholder="Type your message here... 💭"
+              class="flex-1 px-4 py-3 rounded-xl border-2 border-purple-200 focus:border-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-200 transition-all"
+              onkeypress="handleChatKeyPress(event)"
+            >
+            <button 
+              onclick="sendMessage()" 
+              class="px-6 py-3 bg-purple-400 text-white rounded-xl font-semibold hover:bg-purple-500 transition-colors duration-300 transform hover:scale-105"
+            >
+              Send 💌
+            </button>
+          </div>
+          
+          <!-- Quick Reply Buttons -->
+          <div class="mt-4 flex flex-wrap gap-2 justify-center">
+            <button onclick="quickReply('I feel happy!')" class="quick-reply px-4 py-2 bg-happy/20 text-yellow-800 rounded-full text-sm hover:bg-happy/30 transition-colors">😊 I feel happy!</button>
+            <button onclick="quickReply('I need support')" class="quick-reply px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm hover:bg-blue-200 transition-colors">🤗 I need support</button>
+            <button onclick="quickReply('Tell me a joke')" class="quick-reply px-4 py-2 bg-green-100 text-green-800 rounded-full text-sm hover:bg-green-200 transition-colors">😄 Tell me a joke</button>
+            <button onclick="quickReply('How can I relax?')" class="quick-reply px-4 py-2 bg-purple-100 text-purple-800 rounded-full text-sm hover:bg-purple-200 transition-colors">🧘‍♀️ How can I relax?</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 mt-16">
+      <div class="container mx-auto px-4 text-center">
+        <div class="text-2xl mb-4">🌟</div>
+        <h3 class="text-xl font-semibold mb-2">Mento - Your Mental Health Companion</h3>
+        <p class="text-gray-400 mb-4">Always here for you, one breath at a time</p>
+        <div class="text-sm text-gray-500">
+          Built with 💙 for mental wellness
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
 </html>
