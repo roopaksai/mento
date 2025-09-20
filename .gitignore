@@ -18,6 +18,9 @@ build/
 .env.test.local
 .env.production.local
 
+# Generated CSS (Vite handles this)
+public/output.css
+
 # IDE files
 .vscode/
 .idea/
@@ -44,21 +47,16 @@ pids
 *.seed
 *.pid.lock
 
-# Coverage directory used by tools like istanbul
+# Coverage directory
 coverage/
 *.lcov
-
-# nyc test coverage
 .nyc_output
 
 # ESLint cache
 .eslintcache
 
-# Optional npm cache directory
+# Optional npm cache
 .npm
-
-# Optional eslint cache
-.eslintcache
 
 # Output of 'npm pack'
 *.tgz
@@ -66,28 +64,30 @@ coverage/
 # Yarn Integrity file
 .yarn-integrity
 
-# parcel-bundler cache (https://parceljs.org/)
+# Parcel cache
 .cache
 .parcel-cache
 
-# next.js build output
+# Next.js build output
 .next
 
-# nuxt.js build output
+# Nuxt.js build output
 .nuxt
 
-# vuepress build output
+# Vuepress build output
 .vuepress/dist
 
 # Serverless directories
 .serverless
 
-# Stores VSCode versions used for testing VSCode extensions
+# VSCode extensions testing
 .vscode-test
 
 # Temporary folders
 tmp/
 temp/
 
-# Package backup files
-package-old.json
+# Backup files
+*-old.*
+*.backup
+*.bak
