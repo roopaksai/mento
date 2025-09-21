@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS for mental wellness theme */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+/* Custom animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease-out;
+}
+
+.slide-in {
+  animation: slideIn 0.6s ease-out;
+}
+
+/* Custom components */
+.wellness-card {
+  @apply bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-6 transition-all duration-300 hover:shadow-2xl hover:scale-105;
+}
+
+.wellness-button {
+  @apply bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 hover:from-blue-600 hover:to-purple-700 hover:shadow-lg transform hover:-translate-y-1;
+}
+
+.wellness-input {
+  @apply w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors duration-300 bg-white/80;
+}
+
+/* Mental health assessment styles */
+.assessment-option {
+  @apply p-4 border-2 border-gray-200 rounded-xl cursor-pointer transition-all duration-300 hover:border-blue-400 hover:bg-blue-50;
+}
+
+.assessment-option.selected {
+  @apply border-blue-500 bg-blue-100 shadow-md;
+}
+
+/* Chatbot styles */
+.chat-message {
+  @apply max-w-xs lg:max-w-md px-4 py-2 rounded-2xl;
+}
+
+.chat-message.user {
+  @apply bg-blue-500 text-white ml-auto;
+}
+
+.chat-message.bot {
+  @apply bg-gray-200 text-gray-800;
+}
