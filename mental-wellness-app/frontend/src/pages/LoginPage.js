@@ -35,8 +35,17 @@ const LoginPage = () => {
       // Navigate to test page
       navigate('/test');
     } catch (err) {
-      setError('Something went wrong. Please try again.');
-      console.error('Login error:', err);
+      // Provide more detailed error information
+      let errorMessage = 'Something went wrong. Please try again.';
+      if (err.response) {
+        errorMessage = `Server Error: ${err.response.status} - ${err.response.data?.error || err.response.statusText}`;
+      } else if (err.request) {
+        errorMessage = 'Network Error: Unable to connect to server. Please check if the backend is running.';
+      } else {
+        errorMessage = `Error: ${err.message}`;
+      }
+      setError(errorMessage);
+      console.error('Login error details:', err);
     } finally {
       setLoading(false);
     }
