@@ -1,15 +1,62 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {
+  Container,
+  Paper,
+  TextField,
+  Button,
+  Typography,
+  Box,
+  Alert,
+  InputAdornment,
+  Fade,
+  CircularProgress
+} from '@mui/material';
+import {
+  Person,
+  Email,
+  FavoriteOutlined
+} from '@mui/icons-material';
 import { apiService } from '../services/api';
 
 const LoginPage = () => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: ''
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('');
+    setLoading(true);
+
+    try {
+      // Simple login with just name and email
+      const response = await apiService.login({
+        email: formData.email,
+        name: formData.name
+      });
+      
+      setSuccess('Welcome! Taking you to your wellness space...');
+      
+      // Store user info
+      localStorage.setItem('userName', formData.name);
+      localStorage.setItem('userEmail', formData.email);
+      localStorage.setItem('userId', response.userId || Date.now().toString());
+      
+      setTimeout(() => {
+        window.location.href = '/test';
+      }, 1500);
+      
+    } catch (err) {
+      setError('Having trouble connecting. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({
@@ -18,141 +65,215 @@ const LoginPage = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    try {
-      // Call API to register/login user
-      const response = await apiService.login(formData);
-      
-      // Store user data in localStorage for session management
-      localStorage.setItem('userName', formData.name);
-      localStorage.setItem('userEmail', formData.email);
-      localStorage.setItem('userId', response.userId);
-      localStorage.setItem('isAdmin', response.isAdmin || false);
-      
-      // Navigate based on user type
-      if (response.isAdmin) {
-        navigate('/admin');
-      } else {
-        navigate('/test');
-      }
-    } catch (err) {
-      // Provide more detailed error information
-      let errorMessage = 'Something went wrong. Please try again.';
-      if (err.response) {
-        errorMessage = `Server Error: ${err.response.status} - ${err.response.data?.error || err.response.statusText}`;
-      } else if (err.request) {
-        errorMessage = 'Network Error: Unable to connect to server. Please check if the backend is running.';
-      } else {
-        errorMessage = `Error: ${err.message}`;
-      }
-      setError(errorMessage);
-      console.error('Login error details:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center p-4"
-         style={{
-           backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
-                            url('https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80')`,
-           backgroundSize: 'cover',
-           backgroundPosition: 'center'
-         }}>
-      
-      <div className="wellness-card max-w-md w-full fade-in">
-        {/* Header with James Bond themed text */}
-        <div className="text-center mb-8">
-          <div className="text-6xl mb-4">🕴️</div>
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            "I'm James Bond."
-          </h1>
-          <p className="text-xl text-gray-600 mb-4">
-            "Who are you?"
-          </p>
-          <p className="text-sm text-gray-500">
-            Welcome to your personal mental wellness journey. 
-            Every great agent starts with knowing themselves.
-          </p>
-        </div>
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(to bottom, #e8f5e8, #f0f8f0)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        p: 2
+      }}
+    >
+      <Container maxWidth="sm">
+        <Paper
+          elevation={0}
+          sx={{
+            p: 6,
+            borderRadius: 4,
+            background: 'rgba(255, 255, 255, 0.9)',
+            border: '1px solid rgba(144, 238, 144, 0.3)',
+            textAlign: 'center'
+          }}
+        >
+          {/* Calming Header */}
+          <Box mb={4}>
+            <FavoriteOutlined 
+              sx={{ 
+                fontSize: 60, 
+                color: '#4caf50', 
+                mb: 2,
+                opacity: 0.8
+              }} 
+            />
+            <Typography
+              variant="h4"
+              component="h1"
+              gutterBottom
+              sx={{
+                fontWeight: 300,
+                color: '#2e7d32',
+                mb: 1,
+                letterSpacing: '-0.5px'
+              }}
+            >
+              Welcome
+            </Typography>
+            <Typography 
+              variant="body1" 
+              color="text.secondary"
+              sx={{ 
+                fontSize: '1.1rem',
+                lineHeight: 1.6,
+                color: '#5a5a5a'
+              }}
+            >
+              Take a moment for yourself. 
+              <br />
+              Your wellness journey starts here.
+            </Typography>
+          </Box>
 
-        {/* Login Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Error/Success Messages */}
           {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl">
-              {error}
-            </div>
+            <Fade in={!!error}>
+              <Alert 
+                severity="info" 
+                sx={{ 
+                  mb: 3,
+                  backgroundColor: '#fff3e0',
+                  color: '#e65100',
+                  border: 'none',
+                  borderRadius: 2
+                }}
+              >
+                {error}
+              </Alert>
+            </Fade>
           )}
 
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-              Agent Name *
-            </label>
-            <input
-              type="text"
-              id="name"
+          {success && (
+            <Fade in={!!success}>
+              <Alert 
+                severity="success" 
+                sx={{ 
+                  mb: 3,
+                  backgroundColor: '#f1f8e9',
+                  color: '#2e7d32',
+                  border: 'none',
+                  borderRadius: 2
+                }}
+              >
+                {success}
+              </Alert>
+            </Fade>
+          )}
+
+          {/* Simple Form */}
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+            <TextField
+              fullWidth
+              label="Your Name"
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="wellness-input"
-              placeholder="Enter your name"
               required
+              variant="outlined"
+              sx={{ 
+                mb: 3,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 3,
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#81c784',
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#4caf50',
+                  }
+                }
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Person sx={{ color: '#81c784' }} />
+                  </InputAdornment>
+                ),
+              }}
             />
-          </div>
 
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-              Secure Email Address *
-            </label>
-            <input
-              type="email"
-              id="email"
+            <TextField
+              fullWidth
+              label="Email Address"
               name="email"
+              type="email"
               value={formData.email}
               onChange={handleChange}
-              className="wellness-input"
-              placeholder="agent@example.com"
               required
+              variant="outlined"
+              sx={{ 
+                mb: 4,
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 3,
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#81c784',
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#4caf50',
+                  }
+                }
+              }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Email sx={{ color: '#81c784' }} />
+                  </InputAdornment>
+                ),
+              }}
             />
-            <p className="text-xs text-gray-500 mt-1">
-              We'll use this to track your wellness journey securely
-            </p>
-          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full wellness-button"
-          >
-            {loading ? (
-              <div className="flex items-center justify-center">
-                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                Initiating Mission...
-              </div>
-            ) : (
-              'Begin Wellness Mission 🚀'
-            )}
-          </button>
-        </form>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              size="large"
+              disabled={loading}
+              sx={{
+                py: 2,
+                backgroundColor: '#4caf50',
+                '&:hover': {
+                  backgroundColor: '#43a047',
+                },
+                borderRadius: 3,
+                textTransform: 'none',
+                fontSize: '1.1rem',
+                fontWeight: 500,
+                boxShadow: '0 4px 20px rgba(76, 175, 80, 0.3)',
+                '&:hover': {
+                  boxShadow: '0 6px 25px rgba(76, 175, 80, 0.4)',
+                }
+              }}
+            >
+              {loading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                'Continue Your Journey'
+              )}
+            </Button>
+          </Box>
 
-        {/* Footer */}
-        <div className="mt-8 text-center">
-          <p className="text-xs text-gray-500">
-            🔒 Your data is secure and confidential
-          </p>
-          <div className="flex justify-center space-x-4 mt-4">
-            <span className="text-2xl">🧠</span>
-            <span className="text-2xl">💙</span>
-            <span className="text-2xl">🌟</span>
-          </div>
-        </div>
-      </div>
-    </div>
+          {/* Gentle Footer */}
+          <Box mt={4}>
+            <Typography 
+              variant="caption" 
+              color="text.secondary"
+              sx={{ 
+                display: 'block',
+                fontSize: '0.9rem',
+                color: '#7a7a7a',
+                lineHeight: 1.5
+              }}
+            >
+              🔒 Your information is safe and private
+            </Typography>
+            <Box sx={{ mt: 2, opacity: 0.6 }}>
+              <Typography variant="caption" sx={{ fontSize: '1.2rem' }}>
+                🌱 💚 ✨
+              </Typography>
+            </Box>
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
   );
 };
 
