@@ -24,6 +24,7 @@ class Database:
                 id TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
                 email TEXT UNIQUE NOT NULL,
+                is_admin BOOLEAN DEFAULT 0,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
@@ -79,6 +80,12 @@ class Database:
                 (?, 'Care Institute', 'institute.ac.in', 'help@institute.ac.in')
         ''', (str(uuid.uuid4()), str(uuid.uuid4()), str(uuid.uuid4())))
         
+        # Insert admin user
+        cursor.execute('''
+            INSERT OR IGNORE INTO users (id, name, email, is_admin)
+            VALUES (?, 'Admin', 'admin@mentalwellness.com', 1)
+        ''', (str(uuid.uuid4()),))
+        
         conn.commit()
         conn.close()
 
@@ -123,6 +130,62 @@ class User:
         user = cursor.fetchone()
         conn.close()
         return dict(user) if user else None
+    
+    def get_user_by_email(self, email):
+        """Get user by email"""
+        conn = self.db.get_connection()
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM users WHERE email = ?', (email,))
+        user = cursor.fetchone()
+        conn.close()
+        return dict(user) if user else None
+    
+    def is_admin(self, email):
+        """Check if user is admin"""
+        user = self.get_user_by_email(email)
+        return user and bool(user.get('is_admin', 0))
+    
+    def get_all_students(self):
+        """Get all non-admin users (students)"""
+        conn = self.db.get_connection()
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM users WHERE is_admin = 0 ORDER BY created_at DESC')
+        users = cursor.fetchall()
+        conn.close()
+        return [dict(user) for user in users]
+    
+    def create_admin_user(self, name, email):
+        """Create a new admin user"""
+        conn = self.db.get_connection()
+        cursor = conn.cursor()
+        
+        # Check if user already exists
+        cursor.execute('SELECT * FROM users WHERE email = ?', (email,))
+        existing_user = cursor.fetchone()
+        
+        if existing_user:
+            # If user exists but is not admin, make them admin
+            if not existing_user['is_admin']:
+                cursor.execute(
+                    'UPDATE users SET is_admin = 1, name = ? WHERE email = ?',
+                    (name, email)
+                )
+                conn.commit()
+                conn.close()
+                return existing_user['id']
+            else:
+                conn.close()
+                raise Exception(f"Admin user with email {email} already exists")
+        else:
+            # Create new admin user
+            admin_id = str(uuid.uuid4())
+            cursor.execute(
+                'INSERT INTO users (id, name, email, is_admin) VALUES (?, ?, ?, 1)',
+                (admin_id, name, email)
+            )
+            conn.commit()
+            conn.close()
+            return admin_id
 
 # Assessment model
 class Assessment:
@@ -182,6 +245,36 @@ class Assessment:
             'SELECT * FROM assessments WHERE user_id = ? ORDER BY completed_at DESC',
             (user_id,)
         )
+        assessments = cursor.fetchall()
+        conn.close()
+        return [dict(assessment) for assessment in assessments]
+    
+    def get_all_assessments(self):
+        """Get all assessments with user details for admin view"""
+        conn = self.db.get_connection()
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT a.*, u.name as user_name 
+            FROM assessments a 
+            JOIN users u ON a.user_id = u.id 
+            WHERE u.is_admin = 0
+            ORDER BY a.completed_at DESC
+        ''')
+        assessments = cursor.fetchall()
+        conn.close()
+        return [dict(assessment) for assessment in assessments]
+    
+    def get_assessments_by_email(self, email):
+        """Get assessments filtered by user email"""
+        conn = self.db.get_connection()
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT a.*, u.name as user_name 
+            FROM assessments a 
+            JOIN users u ON a.user_id = u.id 
+            WHERE u.email = ? AND u.is_admin = 0
+            ORDER BY a.completed_at DESC
+        ''', (email,))
         assessments = cursor.fetchall()
         conn.close()
         return [dict(assessment) for assessment in assessments]

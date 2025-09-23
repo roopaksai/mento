@@ -29,6 +29,9 @@ def login():
         # Create or get user
         user_id = user_model.create_or_get_user(name, email)
         
+        # Check if user is admin
+        is_admin = user_model.is_admin(email)
+        
         # Check if user belongs to partner institution
         institution = institution_model.check_institution_by_email(email)
         
@@ -36,6 +39,7 @@ def login():
             'userId': user_id,
             'name': name,
             'email': email,
+            'isAdmin': is_admin,
             'message': 'Login successful'
         }
         

@@ -79,6 +79,40 @@ export const apiService = {
     } catch (error) {
       throw error.response?.data || error.message;
     }
+  },
+
+  // Admin API functions
+  admin: {
+    // Get all students
+    getStudents: async () => {
+      try {
+        const response = await api.get('/admin/students');
+        return response.data;
+      } catch (error) {
+        throw error.response?.data || error.message;
+      }
+    },
+
+    // Get all assessments
+    getAssessments: async (emailFilter = '') => {
+      try {
+        const url = emailFilter ? `/admin/assessments?email=${encodeURIComponent(emailFilter)}` : '/admin/assessments';
+        const response = await api.get(url);
+        return response.data;
+      } catch (error) {
+        throw error.response?.data || error.message;
+      }
+    },
+
+    // Get analytics data
+    getAnalytics: async () => {
+      try {
+        const response = await api.get('/admin/analytics');
+        return response.data;
+      } catch (error) {
+        throw error.response?.data || error.message;
+      }
+    }
   }
 };
 

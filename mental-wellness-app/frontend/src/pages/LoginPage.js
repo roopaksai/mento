@@ -24,16 +24,21 @@ const LoginPage = () => {
     setError('');
 
     try {
+      // Call API to register/login user
+      const response = await apiService.login(formData);
+      
       // Store user data in localStorage for session management
       localStorage.setItem('userName', formData.name);
       localStorage.setItem('userEmail', formData.email);
-      
-      // Call API to register/login user
-      const response = await apiService.login(formData);
       localStorage.setItem('userId', response.userId);
+      localStorage.setItem('isAdmin', response.isAdmin || false);
       
-      // Navigate to test page
-      navigate('/test');
+      // Navigate based on user type
+      if (response.isAdmin) {
+        navigate('/admin');
+      } else {
+        navigate('/test');
+      }
     } catch (err) {
       // Provide more detailed error information
       let errorMessage = 'Something went wrong. Please try again.';

@@ -5,6 +5,7 @@ import TestPage from './pages/TestPage';
 import ReportPage from './pages/ReportPage';
 import MusicPage from './pages/MusicPage';
 import ChatbotPage from './pages/ChatbotPage';
+import AdminDashboard from './pages/AdminDashboard_new';
 import './styles/index.css';
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path="/report" element={<ReportPage />} />
           <Route path="/music" element={<MusicPage />} />
           <Route path="/chatbot" element={<ChatbotPage />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </div>
     </Router>

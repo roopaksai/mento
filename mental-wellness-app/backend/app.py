@@ -24,6 +24,7 @@ def create_app():
     from routes.counselor import counselor_bp
     from routes.music import music_bp
     from routes.chatbot import chatbot_bp
+    from routes.admin import admin_bp
     
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(assessment_bp, url_prefix='/api/assessment')
@@ -31,6 +32,7 @@ def create_app():
     app.register_blueprint(counselor_bp, url_prefix='/api/counselor')
     app.register_blueprint(music_bp, url_prefix='/api/music')
     app.register_blueprint(chatbot_bp, url_prefix='/api/chatbot')
+    app.register_blueprint(admin_bp, url_prefix='/api')
     
     # Health check endpoint
     @app.route('/api/health')
@@ -103,6 +105,10 @@ if __name__ == '__main__':
     print("POST   /api/counselor/request   - Request counselor session")
     print("GET    /api/music/recommendations/<severity> - Music recommendations")
     print("POST   /api/chatbot/message     - Chat with support bot")
+    print("GET    /api/admin/students      - Get all students (admin)")
+    print("GET    /api/admin/assessments   - Get all assessments (admin)")
+    print("GET    /api/admin/analytics     - Get analytics data (admin)")
+    print("POST   /api/admin/create        - Create new admin user")
     print("="*50)
     print("🌐 Frontend should run on: http://localhost:3000")
     print("🔧 Backend running on: http://localhost:5000")
