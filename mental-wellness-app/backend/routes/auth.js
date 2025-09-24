@@ -1,15 +1,17 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator');
-const { User, Institution } = require('../models');
+const db = require('../simpleDb');
 
 const router = express.Router();
 
 // Generate JWT token
-const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE || '7d'
-  });
+const generateToken = (userId, isAdmin) => {
+  return jwt.sign(
+    { userId, isAdmin }, 
+    process.env.JWT_SECRET || 'your_jwt_secret',
+    { expiresIn: '24h' }
+  );
 };
 
 // Validation middleware
@@ -33,7 +35,7 @@ const validateRegister = [
 ];
 
 // @route   POST /api/auth/login
-// @desc    Login user (or register if first time)
+// @desc    Login user (creates if doesn't exist)
 // @access  Public
 router.post('/login', validateLogin, async (req, res) => {
   try {
@@ -48,62 +50,44 @@ router.post('/login', validateLogin, async (req, res) => {
 
     const { name, email } = req.body;
 
-    // Check if user already exists
-    let user = await User.findOne({ email }).populate('institution');
+    // Find existing user
+    let user = db.findUser({ email });
 
     if (!user) {
-      // Create new user
-      user = new User({
+      // Create new user if doesn't exist
+      user = db.createUser({
         name,
         email,
-        isAdmin: email === process.env.ADMIN_EMAIL
+        password: 'default123',
+        institution: 'general'
       });
-
-      // Check if user belongs to a partner institution
-      const emailDomain = email.split('@')[1];
-      const institution = await Institution.findOne({ domain: emailDomain });
-      
-      if (institution) {
-        user.institution = institution._id;
-      }
-
-      await user.save();
-      await user.populate('institution');
+      console.log('Created new user:', user.email, 'isAdmin:', user.isAdmin);
     } else {
       // Update last login and name if changed
-      user.name = name;
-      user.lastLogin = new Date();
-      await user.save();
+      user = db.updateUser(user.id, { 
+        lastLogin: new Date().toISOString(),
+        name: name
+      });
+      console.log('Updated existing user:', user.email, 'isAdmin:', user.isAdmin);
     }
 
     // Generate JWT token
-    const token = generateToken(user._id);
+    const token = generateToken(user.id, user.isAdmin);
 
     // Prepare response data
     const responseData = {
       success: true,
       token,
       user: {
-        id: user._id,
+        id: user.id,
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin,
+        role: user.role,
         lastLogin: user.lastLogin
       },
-      message: 'Login successful'
+      message: user.isAdmin ? 'Welcome Admin!' : 'Login successful'
     };
-
-    // Add institution info if applicable
-    if (user.institution) {
-      responseData.institution = {
-        id: user.institution._id,
-        name: user.institution.name,
-        domain: user.institution.domain,
-        contactEmail: user.institution.contactEmail,
-        partnershipLevel: user.institution.partnershipLevel
-      };
-      responseData.message = `Welcome! We see you're from ${user.institution.name}`;
-    }
 
     res.status(200).json(responseData);
 

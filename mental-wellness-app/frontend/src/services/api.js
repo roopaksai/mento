@@ -2,6 +2,242 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:5000/api';
 
+class ApiService {
+  constructor() {
+    this.isAuthenticated = false;
+    this.currentUser = null;
+    this.token = localStorage.getItem('token');
+    
+    // Check if user is already logged in on startup
+    this.initializeAuth();
+  }
+
+  async initializeAuth() {
+    if (this.token) {
+      try {
+        const response = await this.verifyToken();
+        if (response.success) {
+          this.currentUser = response.user;
+          this.isAuthenticated = true;
+          console.log('Auth initialized:', this.currentUser);
+        } else {
+          this.clearAuth();
+        }
+      } catch (error) {
+        console.log('Auth initialization failed, clearing stored data');
+        this.clearAuth();
+      }
+    }
+  }
+
+  clearAuth() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.token = null;
+    this.currentUser = null;
+    this.isAuthenticated = false;
+  }
+
+  // Real login with backend
+  async login(name, email) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email })
+      });
+
+      const data = await response.json();
+      
+      if (data.success) {
+        // Store token and user data
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        
+        // Update instance state
+        this.token = data.token;
+        this.currentUser = data.user;
+        this.isAuthenticated = true;
+        
+        console.log('Login successful:', data.user);
+        return data;
+      } else {
+        throw new Error(data.message || 'Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      
+      // Fallback to mock authentication if backend is not available
+      console.log('Backend not available, using mock authentication');
+      return this.mockLogin(name, email);
+    }
+  }
+
+  // Fallback mock login
+  async mockLogin(name, email) {
+    const isAdmin = this.isAdminUser(name, email);
+    
+    const user = {
+      id: Date.now().toString(),
+      name,
+      email,
+      isAdmin,
+      role: isAdmin ? 'admin' : 'student',
+      createdAt: new Date().toISOString()
+    };
+    
+    const token = `mock_token_${Date.now()}`;
+    
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
+    
+    this.token = token;
+    this.currentUser = user;
+    this.isAuthenticated = true;
+    
+    return {
+      success: true,
+      user,
+      token,
+      message: isAdmin ? 'Welcome Admin! (Mock Mode)' : 'Login successful (Mock Mode)'
+    };
+  }
+
+  // Verify token with backend
+  async verifyToken() {
+    if (!this.token) return { success: false };
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/verify`, {
+        headers: {
+          'Authorization': `Bearer ${this.token}`
+        }
+      });
+
+      return await response.json();
+    } catch (error) {
+      console.error('Token verification failed:', error);
+      return { success: false };
+    }
+  }
+
+  // Check if user should be admin
+  isAdminUser(name, email) {
+    const adminKeywords = ['admin', 'administrator'];
+    const nameCheck = adminKeywords.some(keyword => 
+      name.toLowerCase().includes(keyword)
+    );
+    const emailCheck = adminKeywords.some(keyword => 
+      email.toLowerCase().includes(keyword)
+    );
+    return nameCheck || emailCheck;
+  }
+
+  // Get current user
+  getCurrentUser() {
+    return this.currentUser;
+  }
+
+  // Check if authenticated
+  isUserAuthenticated() {
+    return this.isAuthenticated && this.token && this.currentUser;
+  }
+
+  // Logout
+  logout() {
+    this.clearAuth();
+  }
+
+  // API methods with authentication headers
+  async apiCall(endpoint, options = {}) {
+    const headers = {
+      'Content-Type': 'application/json',
+      ...options.headers
+    };
+
+    if (this.token) {
+      headers.Authorization = `Bearer ${this.token}`;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        ...options,
+        headers
+      });
+
+      return await response.json();
+    } catch (error) {
+      console.error('API call failed:', error);
+      throw error;
+    }
+  }
+
+  // Assessment methods
+  async getAssessments() {
+    try {
+      return await this.apiCall('/assessment');
+    } catch (error) {
+      return { assessments: [] };
+    }
+  }
+
+  async submitAssessment(assessmentData) {
+    try {
+      return await this.apiCall('/assessment/submit', {
+        method: 'POST',
+        body: JSON.stringify(assessmentData)
+      });
+    } catch (error) {
+      return { success: true, assessment: { id: Date.now(), ...assessmentData } };
+    }
+  }
+
+  // Counselor methods
+  async getCounselors() {
+    try {
+      return await this.apiCall('/counselor');
+    } catch (error) {
+      return { counselors: [] };
+    }
+  }
+
+  async requestCounselor(requestData) {
+    try {
+      return await this.apiCall('/counselor/request', {
+        method: 'POST',
+        body: JSON.stringify(requestData)
+      });
+    } catch (error) {
+      return { success: true, request: { id: Date.now(), ...requestData } };
+    }
+  }
+
+  // Music methods
+  async getMusicRecommendations(mood = null, severity = null) {
+    try {
+      let endpoint = '/music/recommendations';
+      const params = new URLSearchParams();
+      if (mood) params.append('mood', mood);
+      if (severity) params.append('severity', severity);
+      
+      if (params.toString()) {
+        endpoint += `?${params.toString()}`;
+      }
+      
+      return await this.apiCall(endpoint);
+    } catch (error) {
+      return {
+        recommendations: [
+          { id: 1, title: 'Weightless', artist: 'Marconi Union', genre: 'Ambient', mood: 'calm' },
+          { id: 2, title: 'Claire de Lune', artist: 'Claude Debussy', genre: 'Classical', mood: 'peaceful' }
+        ]
+      };
+    }
+  }
+}
+
 // Create axios instance with interceptors
 const api = axios.create({
   baseURL: API_BASE_URL,

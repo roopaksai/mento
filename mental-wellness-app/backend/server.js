@@ -1,9 +1,12 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const path = require('path');
 require('dotenv').config();
+
+// Initialize simple database
+const db = require('./simpleDb');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -41,18 +44,26 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/mental_wellness', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => {
-  console.log('🍃 Connected to MongoDB');
-})
-.catch((error) => {
-  console.error('❌ MongoDB connection error:', error.message);
-  process.exit(1);
-});
+// Initialize JSON file-based database
+console.log('📄 Using file-based JSON database');
+console.log('📍 Database location:', path.join(__dirname, 'database.json'));
+
+// Test database connection
+try {
+  const users = db.getAllUsers();
+  console.log('✅ Database initialized successfully');
+  console.log(`📊 Found ${users.length} users in database`);
+  
+  // Check if admin exists
+  const adminUser = db.findUser({ email: 'admin@mentalwell.com' });
+  if (adminUser) {
+    console.log('👨‍💼 Admin user found:', adminUser.email);
+  } else {
+    console.log('ℹ️ No admin user found. Admin can be created by using "admin" in name or email');
+  }
+} catch (error) {
+  console.error('❌ Database initialization error:', error);
+}
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

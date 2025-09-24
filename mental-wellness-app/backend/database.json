@@ -1,0 +1,67 @@
+{
+  "users": [
+    {
+      "id": "admin-001",
+      "name": "Admin User",
+      "email": "admin@mentalwell.com",
+      "password": "admin123",
+      "role": "admin",
+      "isAdmin": true,
+      "isActive": true,
+      "createdAt": "2025-09-24T00:00:00.000Z",
+      "lastLogin": "2025-09-24T00:00:00.000Z"
+    },
+    {
+      "id": "user-1758691105152",
+      "name": "Admin",
+      "email": "admin@mentalwellness.com",
+      "password": "default123",
+      "institution": "general",
+      "isAdmin": true,
+      "role": "admin",
+      "isActive": true,
+      "createdAt": "2025-09-24T05:18:25.152Z",
+      "lastLogin": "2025-09-24T05:18:25.152Z"
+    }
+  ],
+  "assessments": [],
+  "institutions": [
+    {
+      "id": "inst-001",
+      "name": "Mental Health University",
+      "domain": "university.edu",
+      "contactEmail": "counseling@university.edu",
+      "isActive": true,
+      "createdAt": "2025-09-24T00:00:00.000Z"
+    },
+    {
+      "id": "inst-002",
+      "name": "Wellness College",
+      "domain": "college.org",
+      "contactEmail": "support@college.org",
+      "isActive": true,
+      "createdAt": "2025-09-24T00:00:00.000Z"
+    }
+  ],
+  "counselorRequests": [],
+  "musicRecommendations": [
+    {
+      "id": "music-001",
+      "title": "Weightless",
+      "artist": "Marconi Union",
+      "genre": "Ambient",
+      "mood": "calm",
+      "severityLevel": "minimal",
+      "description": "Scientifically designed to reduce anxiety"
+    },
+    {
+      "id": "music-002",
+      "title": "Claire de Lune",
+      "artist": "Claude Debussy",
+      "genre": "Classical",
+      "mood": "peaceful",
+      "severityLevel": "minimal",
+      "description": "Gentle classical piece for relaxation"
+    }
+  ]
+}
