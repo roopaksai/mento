@@ -7,7 +7,7 @@ import TestPage from './pages/TestPage';
 import ReportPage from './pages/ReportPage';
 import MusicPage from './pages/MusicPage';
 import ChatbotPage from './pages/ChatbotPage';
-import AdminDashboard from './pages/AdminDashboard_new';
+import AdminDashboard from './pages/AdminDashboard_simple';
 import './styles/index.css';
 
 // Create Material-UI theme with calming colors

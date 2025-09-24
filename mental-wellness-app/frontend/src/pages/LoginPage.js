@@ -40,16 +40,34 @@ const LoginPage = () => {
         name: formData.name
       });
       
-      setSuccess('Welcome! Taking you to your wellness space...');
-      
       // Store user info
       localStorage.setItem('userName', formData.name);
       localStorage.setItem('userEmail', formData.email);
       localStorage.setItem('userId', response.userId || Date.now().toString());
+      localStorage.setItem('isAdmin', response.user?.isAdmin || false);
       
-      setTimeout(() => {
-        window.location.href = '/test';
-      }, 1500);
+      // Check if user is admin and route accordingly
+      const isAdmin = response.user?.isAdmin || 
+                     formData.email.toLowerCase().includes('admin') ||
+                     formData.name.toLowerCase().includes('admin');
+      
+      console.log('Login response:', response);
+      console.log('Is admin?', isAdmin);
+      console.log('Email contains admin?', formData.email.toLowerCase().includes('admin'));
+      console.log('Name contains admin?', formData.name.toLowerCase().includes('admin'));
+      
+      if (isAdmin) {
+        setSuccess('Welcome Admin! Taking you to the admin dashboard...');
+        localStorage.setItem('isAdmin', 'true');
+        setTimeout(() => {
+          window.location.href = '/admin';
+        }, 1500);
+      } else {
+        setSuccess('Welcome! Taking you to your wellness space...');
+        setTimeout(() => {
+          window.location.href = '/test';
+        }, 1500);
+      }
       
     } catch (err) {
       setError('Having trouble connecting. Please try again.');

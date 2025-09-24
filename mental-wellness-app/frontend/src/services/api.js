@@ -41,20 +41,28 @@ export const apiService = {
   // Authentication
   login: async (userData) => {
     try {
+      // Enhanced admin detection logic
+      const isAdmin = userData.email.toLowerCase().includes('admin') ||
+                     userData.name.toLowerCase().includes('admin') ||
+                     userData.email === 'admin@mentalwell.com' ||
+                     userData.email === 'admin@example.com';
+      
       // For development - simple login without backend
       if (userData.name && userData.email) {
         // Simulate successful login
         const mockResponse = {
           success: true,
-          userId: Date.now().toString(),
+          userId: isAdmin ? 'admin-001' : Date.now().toString(),
           user: {
             name: userData.name,
             email: userData.email,
-            isAdmin: userData.email.toLowerCase().includes('admin')
+            isAdmin: isAdmin,
+            role: isAdmin ? 'admin' : 'user'
           },
           token: 'mock-token-' + Date.now()
         };
         
+        console.log('Mock login response:', mockResponse);
         return mockResponse;
       }
       
@@ -68,13 +76,17 @@ export const apiService = {
     } catch (error) {
       // Fallback to mock login if backend is unavailable
       console.log('Backend unavailable, using mock login');
+      const isAdmin = userData.email?.toLowerCase().includes('admin') ||
+                     userData.name?.toLowerCase().includes('admin');
+      
       return {
         success: true,
-        userId: Date.now().toString(),
+        userId: isAdmin ? 'admin-001' : Date.now().toString(),
         user: {
           name: userData.name || 'User',
           email: userData.email || 'user@example.com',
-          isAdmin: false
+          isAdmin: isAdmin,
+          role: isAdmin ? 'admin' : 'user'
         },
         token: 'mock-token-' + Date.now()
       };
